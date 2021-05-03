@@ -1,0 +1,57 @@
+#include<iostream>
+using namespace std;
+
+#include<vector>
+
+vector<vector<int> > topology1(100, vector<int>());
+vector<vector<int> > topology2(100, vector<int>());
+vector<bool > visit1(100,false);
+vector<bool > visit2(100,false);
+int N, M, y, x;
+int result = 0;
+void dfs( int cur_number, int& res) {
+	for (int i = 0; i < topology1[cur_number].size(); i++) {
+		if (visit1[topology1[cur_number][i]] == false) {
+			visit1[topology1[cur_number][i]] = true;
+			res++;
+			dfs(topology1[cur_number][i], res);
+		}	
+	}
+}
+void dfs_r( int cur_number, int& res) {
+	for (int i = 0; i < topology2[cur_number].size(); i++) {
+		if (visit2[topology2[cur_number][i]] == false) {
+			visit2[topology2[cur_number][i]] = true;
+			res++;
+			dfs_r(topology2[cur_number][i], res);
+		}
+	}
+}
+int main() {
+	cin >> N >> M;
+	for (int i = 0; i < M; i++) {
+		cin >> x >> y;
+		topology1[y].push_back(x);
+		topology2[x].push_back(y);
+	}
+
+	for (int i = 1; i <= N; i++) {
+			int res = 0;
+			int res2 = 0;
+			visit1[i] = true;
+			visit2[i] = true;
+			dfs( i, res);
+			dfs_r(i, res2);
+			if (res > N / 2 || res2>N/2) {
+				result++;
+			}
+			for (int loop = 0; loop <= N; loop++) {
+				visit1[loop] = false;
+				visit2[loop] = false;
+			}
+
+	}
+
+	cout << result;
+	return 0;
+}
