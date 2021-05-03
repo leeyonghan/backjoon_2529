@@ -1,0 +1,78 @@
+#include<iostream>
+using namespace std;
+#include<vector>
+#include<string>
+#include<queue>
+struct cmp {
+	bool operator()(pair<int, pair<int, int>>a, pair<int, pair<int, int>>b) {
+		if (a.second.first > b.second.first) {
+			return true;
+		}
+		else return false;
+	}
+};
+priority_queue<pair< int, pair<int, int> >, vector<pair< int, pair<int, int> >>, cmp >pq;
+vector<vector<int> >map(100, vector<int>(100, 0));
+vector<vector<int> >value(100, vector<int>(100, 0));
+int T = 0, N = 0;
+void maze(int y, int x, int pre_value) {
+	if (y >= 0 && y < N && x >= 0 && x < N && (x + y > 0)) {
+		if (pre_value + map[y][x] < value[y][x]) {
+			value[y][x] = pre_value + map[y][x];
+			pq.push(make_pair(value[y][x], make_pair(y, x)));
+		}
+	}
+}
+int main() {
+
+	cin >> T;
+
+	for (int i = 0; i < T; i++) {
+		cin >> N;
+		for (int line = 0; line < N; line++) {
+			string L;
+			cin >> L;
+			for (int line2 = 0; line2 < N; line2++) {
+				map[line][line2] = (int)L[line2] - 48;
+				value[line][line2] = 987654321;
+			}
+		}
+		pair<int, pair<int, int>> a;
+		pq.push(make_pair(0, make_pair(0, 0)));
+		pq.push(make_pair(0, make_pair(3, 0)));
+		pq.push(make_pair(0, make_pair(2, 0)));
+		pq.push(make_pair(0, make_pair(1, 0)));
+		pq.push(make_pair(0, make_pair(7, 0)));
+
+		while (!pq.empty()) {
+			pair<int, pair<int, int> >position;
+			position = pq.top();
+			pq.pop();
+			if (position.second.first == N - 1 && position.second.second == N - 1) {
+				cout << "#" << i + 1 << " " << position.first << endl;
+				while (!pq.empty()) {
+					pq.pop();
+				}
+			}
+			else {
+				maze(position.second.first + 1, position.second.second, position.first);
+				maze(position.second.first - 1, position.second.second, position.first);
+				maze(position.second.first, position.second.second + 1, position.first);
+				maze(position.second.first, position.second.second - 1, position.first);
+			}
+		}
+
+	}
+
+	/*
+	string a = "000011";
+	cout << endl;
+	do {
+		for (int i = 0; i < a.size(); i++) {
+			cout << a[i];
+		}
+		cout << endl;
+	} while (next_permutation(a.begin(), a.end()));
+	*/
+	return 0;
+}
